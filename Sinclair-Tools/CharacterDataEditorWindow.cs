@@ -4,6 +4,7 @@ using UnityEditor;
 public class CharacterDataEditorWindow : EditorWindow
 {
     private CharacterData data;
+    private Vector2 scroll;
 
     [MenuItem("Window/Sinclair Tools/Character Data Editor")]
     public static void ShowWindow()
@@ -26,19 +27,23 @@ public class CharacterDataEditorWindow : EditorWindow
             return;
         }
 
-        EditorGUILayout.Space();
-        data.characterName = EditorGUILayout.TextField("Name", data.characterName);
-        data.level = EditorGUILayout.IntField("Level", data.level);
-        data.maxHP = EditorGUILayout.IntField("Max HP", data.maxHP);
-        data.maxMP = EditorGUILayout.IntField("Max MP", data.maxMP);
-        data.strength = EditorGUILayout.IntField("Strength", data.strength);
-        data.defense = EditorGUILayout.IntField("Defense", data.defense);
-        data.agility = EditorGUILayout.IntField("Agility", data.agility);
+        SerializedObject so = new SerializedObject(data);
+        so.Update();
 
-        if (GUI.changed)
-        {
-            EditorUtility.SetDirty(data);
-        }
+        scroll = EditorGUILayout.BeginScrollView(scroll);
+        EditorGUILayout.PropertyField(so.FindProperty("characterName"));
+        EditorGUILayout.PropertyField(so.FindProperty("level"));
+        EditorGUILayout.PropertyField(so.FindProperty("maxHP"));
+        EditorGUILayout.PropertyField(so.FindProperty("maxMP"));
+        EditorGUILayout.PropertyField(so.FindProperty("strength"));
+        EditorGUILayout.PropertyField(so.FindProperty("defense"));
+        EditorGUILayout.PropertyField(so.FindProperty("agility"));
+        EditorGUILayout.PropertyField(so.FindProperty("magic"));
+        EditorGUILayout.PropertyField(so.FindProperty("luck"));
+        EditorGUILayout.PropertyField(so.FindProperty("abilities"), true);
+        EditorGUILayout.EndScrollView();
+
+        so.ApplyModifiedProperties();
     }
 
     private void CreateNewData()
@@ -49,6 +54,8 @@ public class CharacterDataEditorWindow : EditorWindow
         {
             AssetDatabase.CreateAsset(data, path);
             AssetDatabase.SaveAssets();
+            EditorUtility.FocusProjectWindow();
+            Selection.activeObject = data;
         }
     }
 }

@@ -3,60 +3,51 @@ using UnityEditor;
 
 public class AbilityMakerWindow : EditorWindow
 {
-    [MenuItem("Window/Ability Maker")]
+    private AbilityData ability;
+
+    [MenuItem("Window/Sinclair Tools/Ability Maker")]
     public static void ShowWindow()
     {
-        // Show existing window instance. If one doesn't exist, create one.
-        EditorWindow.GetWindow(typeof(AbilityMakerWindow), false, "Ability Maker");
+        GetWindow<AbilityMakerWindow>(false, "Ability Maker");
     }
 
     private void OnGUI()
     {
-        GUILayout.Label("Ability Maker Main Menu", EditorStyles.boldLabel);
+        GUILayout.Label("Ability Editor", EditorStyles.boldLabel);
 
-        // Create buttons for various actions
-        if (GUILayout.Button("Create New Ability"))
+        ability = (AbilityData)EditorGUILayout.ObjectField("Ability", ability, typeof(AbilityData), false);
+        if (ability == null)
         {
-            CreateNewAbility();
+            EditorGUILayout.HelpBox("Select or create an Ability asset.", MessageType.Info);
+            if (GUILayout.Button("Create New"))
+            {
+                CreateNewAbility();
+            }
+            return;
         }
 
-        if (GUILayout.Button("Open Existing Ability"))
-        {
-            OpenExistingAbility();
-        }
+        SerializedObject so = new SerializedObject(ability);
+        so.Update();
 
-        if (GUILayout.Button("Save Ability"))
-        {
-            SaveAbility();
-        }
+        EditorGUILayout.PropertyField(so.FindProperty("abilityName"));
+        EditorGUILayout.PropertyField(so.FindProperty("description"));
+        EditorGUILayout.PropertyField(so.FindProperty("mpCost"));
+        EditorGUILayout.PropertyField(so.FindProperty("power"));
+        EditorGUILayout.PropertyField(so.FindProperty("animation"));
 
-        if (GUILayout.Button("Load Ability"))
-        {
-            LoadAbility();
-        }
+        so.ApplyModifiedProperties();
     }
 
     private void CreateNewAbility()
     {
-        // Logic for creating a new ability
-        Debug.Log("Creating a new ability...");
-    }
-
-    private void OpenExistingAbility()
-    {
-        // Logic for opening an existing ability
-        Debug.Log("Opening an existing ability...");
-    }
-
-    private void SaveAbility()
-    {
-        // Logic for saving the current ability
-        Debug.Log("Saving the ability...");
-    }
-
-    private void LoadAbility()
-    {
-        // Logic for loading a saved ability
-        Debug.Log("Loading an ability...");
+        ability = ScriptableObject.CreateInstance<AbilityData>();
+        string path = EditorUtility.SaveFilePanelInProject("Save Ability Data", "NewAbilityData", "asset", "Specify where to save the asset.");
+        if (!string.IsNullOrEmpty(path))
+        {
+            AssetDatabase.CreateAsset(ability, path);
+            AssetDatabase.SaveAssets();
+            EditorUtility.FocusProjectWindow();
+            Selection.activeObject = ability;
+        }
     }
 }
