@@ -35,6 +35,29 @@ public class TopDownCharacterController : MonoBehaviour
         inputActions.Player.Move.canceled += OnMoveCanceled;
         inputActions.Player.Sprint.performed += OnSprintPerformed;
         inputActions.Player.Sprint.canceled += OnSprintCanceled;
+
+        // Subscribe to additional player actions
+        inputActions.Player.Attack.performed += OnAttackPerformed;
+        inputActions.Player.Interact.performed += OnInteractPerformed;
+        inputActions.Player.Jump.performed += OnJumpPerformed;
+        inputActions.Player.Crouch.performed += OnCrouchPerformed;
+        inputActions.Player.Crouch.canceled += OnCrouchCanceled;
+    }
+
+    private void OnDestroy()
+    {
+        // Unsubscribe from movement input
+        inputActions.Player.Move.performed -= OnMovePerformed;
+        inputActions.Player.Move.canceled -= OnMoveCanceled;
+        inputActions.Player.Sprint.performed -= OnSprintPerformed;
+        inputActions.Player.Sprint.canceled -= OnSprintCanceled;
+
+        // Unsubscribe from additional player actions
+        inputActions.Player.Attack.performed -= OnAttackPerformed;
+        inputActions.Player.Interact.performed -= OnInteractPerformed;
+        inputActions.Player.Jump.performed -= OnJumpPerformed;
+        inputActions.Player.Crouch.performed -= OnCrouchPerformed;
+        inputActions.Player.Crouch.canceled -= OnCrouchCanceled;
     }
 
     private void OnEnable()
@@ -104,6 +127,36 @@ public class TopDownCharacterController : MonoBehaviour
     private void OnSprintCanceled(InputAction.CallbackContext context)
     {
         isSprinting = false;
+    }
+
+    private void OnAttackPerformed(InputAction.CallbackContext context)
+    {
+        // Trigger attack animation
+        animator.SetTrigger("Attack");
+    }
+
+    private void OnInteractPerformed(InputAction.CallbackContext context)
+    {
+        // Trigger interact animation
+        animator.SetTrigger("Interact");
+    }
+
+    private void OnJumpPerformed(InputAction.CallbackContext context)
+    {
+        // Trigger jump animation
+        animator.SetTrigger("Jump");
+    }
+
+    private void OnCrouchPerformed(InputAction.CallbackContext context)
+    {
+        // Enter crouch state
+        animator.SetBool("Crouch", true);
+    }
+
+    private void OnCrouchCanceled(InputAction.CallbackContext context)
+    {
+        // Exit crouch state
+        animator.SetBool("Crouch", false);
     }
 
     /// <summary>
