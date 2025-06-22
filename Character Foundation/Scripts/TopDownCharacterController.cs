@@ -6,6 +6,9 @@ public class TopDownCharacterController : MonoBehaviour
 {
     public float moveSpeed = 5f; // Movement speed
 
+    /// <summary>Speed at which the character rotates toward movement direction.</summary>
+    public float rotationSpeed = 10f;
+
     private CharacterController characterController;
     private Animator animator;
 
@@ -62,8 +65,12 @@ public class TopDownCharacterController : MonoBehaviour
             // Trigger walk animation
             animator.SetBool("Walk", true);
 
-            // Make character face the movement direction
-            transform.rotation = Quaternion.LookRotation(moveDirection, Vector3.up);
+            // Make character face the movement direction over time
+            Quaternion targetRotation = Quaternion.LookRotation(moveDirection, Vector3.up);
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                targetRotation,
+                rotationSpeed * Time.deltaTime);
         }
         else
         {
