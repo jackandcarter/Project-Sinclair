@@ -1,0 +1,9 @@
+# Unity generated folders
+Library/
+Temp/
+Logs/
+Build/
+# OS-specific files
+.DS_Store
+Thumbs.db
+Desktop.ini
