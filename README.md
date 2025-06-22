@@ -40,6 +40,8 @@ for several interior locations:
 - **Haphazard Helstien's H-Armory** next to **Hephaestus Café** prefab.
 - **Hephaestus Café** restaurant prefab with space for TV monitors.
 - **Samson's Office** – a beach-themed office prefab.
+- **Tutorial Fountain** demonstrating a `BattleActionEvent` that uses the
+  "Water Bottle" item when triggered.
 
 Open the `Olympus` scene from the Unity editor and use the doors placed around
 the main street to access each interior area. The interiors are simple prefabs

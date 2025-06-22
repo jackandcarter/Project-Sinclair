@@ -10,6 +10,8 @@ public class BattleManager : MonoBehaviour
 {
     public List<CharacterData> playerCharacters = new List<CharacterData>();
     public List<CharacterData> enemyCharacters = new List<CharacterData>();
+    public InventoryManager inventory; // Tracks consumable items
+    public ConsumableItem defaultItem;  // Item used for demo actions
 
     private readonly List<BattleCharacter> turnQueue = new List<BattleCharacter>();
     private int currentTurnIndex;
@@ -57,11 +59,19 @@ public class BattleManager : MonoBehaviour
             yield break;
         }
 
-        // Simple attack using character strength and defense values
-        int damage = Mathf.Max(1, character.data.strength - target.data.defense);
-        target.currentHP -= damage;
+        // Demonstration of using an item when below half HP
+        if (character.isPlayer && defaultItem != null && inventory != null && character.currentHP <= character.data.maxHP / 2 && inventory.GetQuantity(defaultItem) > 0)
+        {
+            UseItem(character, defaultItem, character);
+        }
+        else
+        {
+            // Simple attack using character strength and defense values
+            int damage = Mathf.Max(1, character.data.strength - target.data.defense);
+            target.currentHP -= damage;
 
-        Debug.Log($"{character.data.characterName} attacks {target.data.characterName} for {damage} damage!");
+            Debug.Log($"{character.data.characterName} attacks {target.data.characterName} for {damage} damage!");
+        }
 
         yield return new WaitForSeconds(1f);
     }
@@ -90,6 +100,33 @@ public class BattleManager : MonoBehaviour
             }
         }
         return list;
+    }
+
+    /// <summary>
+    /// Finds the runtime battle character associated with the given data.
+    /// </summary>
+    public BattleCharacter FindCharacter(CharacterData data)
+    {
+        foreach (BattleCharacter c in turnQueue)
+        {
+            if (c.data == data)
+            {
+                return c;
+            }
+        }
+        return null;
+    }
+
+    /// <summary>
+    /// Uses a consumable item on the target.
+    /// </summary>
+    public void UseItem(BattleCharacter user, ConsumableItem item, BattleCharacter target)
+    {
+        if (inventory != null && user != null)
+        {
+            inventory.UseItem(item, target);
+            Debug.Log($"{user.data.characterName} uses {item.itemName} on {target.data.characterName}.");
+        }
     }
 }
 
