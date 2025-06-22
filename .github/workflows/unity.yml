@@ -1,0 +1,29 @@
+name: Unity Build and Test
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Unity
+        uses: unity-actions/setup@v2
+        with:
+          unityVersion: 2022.3.20f1
+          unityLicense: ${{ secrets.UNITY_LICENSE }}
+      - name: Build
+        uses: unity-actions/build@v2
+        with:
+          projectPath: .
+          targetPlatform: StandaloneLinux64
+      - name: Run Tests
+        uses: unity-actions/test-runner@v2
+        with:
+          projectPath: .
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          artifactsPath: TestResults
