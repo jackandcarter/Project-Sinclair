@@ -1,0 +1,13 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400012
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: CommandOrders
+  m_EditorClassIdentifier:
+  questName: "Relay Command Orders"
+  description: "Deliver Lieutenant Reich's orders to squads in the command center."
+  isMainQuest: 0
