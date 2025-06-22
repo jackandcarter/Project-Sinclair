@@ -22,6 +22,13 @@ public class TopDownCharacterController : MonoBehaviour
         // Subscribe to movement input
         inputActions.Player.Move.performed += OnMovePerformed;
         inputActions.Player.Move.canceled += OnMoveCanceled;
+
+        // Subscribe to other player actions
+        inputActions.Player.Attack.performed += OnAttackPerformed;
+        inputActions.Player.Interact.performed += OnInteractPerformed;
+        inputActions.Player.Jump.performed += OnJumpPerformed;
+        inputActions.Player.Crouch.performed += OnCrouchPerformed;
+        inputActions.Player.Crouch.canceled += OnCrouchCanceled;
     }
 
     private void OnEnable()
@@ -75,6 +82,31 @@ public class TopDownCharacterController : MonoBehaviour
     {
         // Reset input when movement stops
         moveInput = Vector2.zero;
+    }
+
+    private void OnAttackPerformed(InputAction.CallbackContext context)
+    {
+        animator.SetTrigger("Attack");
+    }
+
+    private void OnInteractPerformed(InputAction.CallbackContext context)
+    {
+        animator.SetTrigger("Interact");
+    }
+
+    private void OnJumpPerformed(InputAction.CallbackContext context)
+    {
+        animator.SetTrigger("Jump");
+    }
+
+    private void OnCrouchPerformed(InputAction.CallbackContext context)
+    {
+        animator.SetBool("Crouch", true);
+    }
+
+    private void OnCrouchCanceled(InputAction.CallbackContext context)
+    {
+        animator.SetBool("Crouch", false);
     }
 
     /// <summary>
