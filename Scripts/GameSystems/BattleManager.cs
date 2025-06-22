@@ -12,12 +12,17 @@ public class BattleManager : MonoBehaviour
     public List<CharacterData> enemyCharacters = new List<CharacterData>();
     public InventoryManager inventory; // Tracks consumable items
     public ConsumableItem defaultItem;  // Item used for demo actions
+    public AbilitySystem abilitySystem; // Handles ability execution
 
     private readonly List<BattleCharacter> turnQueue = new List<BattleCharacter>();
     private int currentTurnIndex;
 
     private void Start()
     {
+        if (abilitySystem == null)
+        {
+            abilitySystem = GetComponent<AbilitySystem>();
+        }
         SetupBattle();
         StartCoroutine(BattleLoop());
     }
@@ -63,6 +68,11 @@ public class BattleManager : MonoBehaviour
         if (character.isPlayer && defaultItem != null && inventory != null && character.currentHP <= character.data.maxHP / 2 && inventory.GetQuantity(defaultItem) > 0)
         {
             UseItem(character, defaultItem, character);
+        }
+        else if (abilitySystem != null && character.data.abilities.Count > 0 && abilitySystem.CanUseAbility(character, character.data.abilities[0]))
+        {
+            AbilityData ability = character.data.abilities[0];
+            abilitySystem.UseAbility(character, target, ability);
         }
         else
         {
@@ -145,6 +155,7 @@ public class BattleCharacter
 {
     public CharacterData data;
     public int currentHP;
+    public int currentMP;
     public bool isPlayer;
 
     public BattleCharacter(CharacterData data, bool isPlayer)
@@ -152,5 +163,6 @@ public class BattleCharacter
         this.data = data;
         this.isPlayer = isPlayer;
         currentHP = data.maxHP;
+        currentMP = data.maxMP;
     }
 }
