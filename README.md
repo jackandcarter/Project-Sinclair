@@ -78,6 +78,17 @@ missions.
 `LectureDefinition` assets describe stat bonuses awarded by `LectureEvent`
 components when a character attends a lecture.
 
+## Developer Console
+Press the **backquote (`) key** at runtime to open the developer console. From
+here you can run debug commands such as:
+
+- `give <item> <amount>` – add items to the inventory
+- `teleport <scene>` – instantly load another scene
+- `godmode` – toggle invulnerability for player characters
+
+Additional commands can be registered through the `DevConsole` component for
+future debugging needs.
+
 ## Placeholder Assets
 Most areas use cubes and basic shapes as temporary models. Create your own
 placeholders under the `Prefabs` folders or import free assets from the Unity
