@@ -6,6 +6,12 @@ public class TopDownCharacterController : MonoBehaviour
 {
     public float moveSpeed = 5f; // Movement speed
 
+    /// <summary>Time to reach the desired move velocity.</summary>
+    public float smoothTime = 0.1f;
+
+    /// <summary>Multiplier applied when sprinting.</summary>
+    public float sprintMultiplier = 2f;
+
     private CharacterController characterController;
     private Animator animator;
 
@@ -13,6 +19,11 @@ public class TopDownCharacterController : MonoBehaviour
     private Vector3 moveDirection; // 3D movement direction
 
     private InputSystem_Actions inputActions; // Use the generated Input Actions class
+
+    private Vector3 currentVelocity; // Smoothed velocity
+    private Vector3 velocityRef; // Velocity reference for SmoothDamp
+    private bool isSprinting;
+    private float baseMoveSpeed;
 
     private void Awake()
     {
@@ -22,6 +33,8 @@ public class TopDownCharacterController : MonoBehaviour
         // Subscribe to movement input
         inputActions.Player.Move.performed += OnMovePerformed;
         inputActions.Player.Move.canceled += OnMoveCanceled;
+        inputActions.Player.Sprint.performed += OnSprintPerformed;
+        inputActions.Player.Sprint.canceled += OnSprintCanceled;
     }
 
     private void OnEnable()
@@ -39,28 +52,34 @@ public class TopDownCharacterController : MonoBehaviour
         // Get references
         characterController = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
+        baseMoveSpeed = moveSpeed;
     }
 
     private void Update()
     {
         // Convert 2D input into a 3D movement vector
-        moveDirection = new Vector3(moveInput.x, 0, moveInput.y).normalized;
+        Vector3 desiredDirection = new Vector3(moveInput.x, 0, moveInput.y).normalized;
 
-        // Move the character
+        // Update movement speed based on sprint state
+        moveSpeed = isSprinting ? baseMoveSpeed * sprintMultiplier : baseMoveSpeed;
+
+        // Desired velocity taking sprint into account
+        Vector3 targetVelocity = desiredDirection * moveSpeed;
+
+        // Smooth towards the desired velocity
+        currentVelocity = Vector3.SmoothDamp(currentVelocity, targetVelocity, ref velocityRef, smoothTime);
+        characterController.Move(currentVelocity * Time.deltaTime);
+
+        // Track the actual movement direction for animation and external queries
+        moveDirection = new Vector3(currentVelocity.x, 0f, currentVelocity.z);
+
         if (moveDirection.magnitude > 0.1f)
         {
-            // Apply movement in world space
-            characterController.Move(moveDirection * moveSpeed * Time.deltaTime);
-
-            // Trigger walk animation
             animator.SetBool("Walk", true);
-
-            // Make character face the movement direction
             transform.rotation = Quaternion.LookRotation(moveDirection, Vector3.up);
         }
         else
         {
-            // Trigger idle animation
             animator.SetBool("Walk", false);
         }
     }
@@ -75,6 +94,16 @@ public class TopDownCharacterController : MonoBehaviour
     {
         // Reset input when movement stops
         moveInput = Vector2.zero;
+    }
+
+    private void OnSprintPerformed(InputAction.CallbackContext context)
+    {
+        isSprinting = true;
+    }
+
+    private void OnSprintCanceled(InputAction.CallbackContext context)
+    {
+        isSprinting = false;
     }
 
     /// <summary>
