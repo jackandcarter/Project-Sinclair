@@ -86,6 +86,7 @@
     <Compile Include="Assets/UI/QuitGame.cs" />
     <Compile Include="Assets/Scripts/GameSystems/DamageAbility.cs" />
     <Compile Include="Assets/Scripts/GameSystems/BattleManager.cs" />
+    <Compile Include="Assets/Scripts/GameSystems/BattleBarrier.cs" />
     <Compile Include="Assets/Scripts/GameSystems/AbilityData.cs" />
     <Compile Include="Assets/Digger/Demo/FlyCamera.cs" />
     <Compile Include="Assets/UI/ObjectSpawner/DeveloperOptions.cs" />

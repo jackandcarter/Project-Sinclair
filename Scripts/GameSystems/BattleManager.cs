@@ -14,6 +14,14 @@ public class BattleManager : MonoBehaviour
     public ConsumableItem defaultItem;  // Item used for demo actions
     public AbilitySystem abilitySystem; // Handles ability execution
 
+    // Prefab used to contain combatants during battle
+    public BattleBarrier barrierPrefab;
+
+    // Radius of the instantiated barrier
+    public float barrierRadius = 10f;
+
+    private BattleBarrier activeBarrier;
+
     private readonly List<BattleCharacter> turnQueue = new List<BattleCharacter>();
     private int currentTurnIndex;
 
@@ -29,6 +37,12 @@ public class BattleManager : MonoBehaviour
 
     private void SetupBattle()
     {
+        if (barrierPrefab != null && activeBarrier == null)
+        {
+            activeBarrier = Instantiate(barrierPrefab, transform.position, Quaternion.identity);
+            activeBarrier.radius = barrierRadius;
+        }
+
         foreach (CharacterData data in playerCharacters)
         {
             turnQueue.Add(new BattleCharacter(data, true));
@@ -54,6 +68,11 @@ public class BattleManager : MonoBehaviour
         }
 
         Debug.Log("Battle ended");
+        if (activeBarrier != null)
+        {
+            Destroy(activeBarrier.gameObject);
+            activeBarrier = null;
+        }
     }
 
     private IEnumerator TakeTurn(BattleCharacter character)
