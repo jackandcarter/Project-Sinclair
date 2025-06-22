@@ -89,6 +89,12 @@ here you can run debug commands such as:
 Additional commands can be registered through the `DevConsole` component for
 future debugging needs.
 
+## Item Maker
+Use **Window → Sinclair Tools → Item Maker** to create or load a
+`ConsumableItem` asset. The window lets you edit the item's **Name**,
+**Description** and **Heal Amount** fields and save the changes back to the
+asset file.
+
 ## Placeholder Assets
 Most areas use cubes and basic shapes as temporary models. Create your own
 placeholders under the `Prefabs` folders or import free assets from the Unity
