@@ -1,0 +1,13 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400013
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: DefendDurnirsPass
+  m_EditorClassIdentifier:
+  questName: "Defend Durnir's Pass"
+  description: "Fight back the demons invading the base and protect the forge."
+  isMainQuest: 1
