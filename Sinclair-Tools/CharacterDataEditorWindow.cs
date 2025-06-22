@@ -35,6 +35,17 @@ public class CharacterDataEditorWindow : EditorWindow
         data.defense = EditorGUILayout.IntField("Defense", data.defense);
         data.agility = EditorGUILayout.IntField("Agility", data.agility);
 
+        EditorGUILayout.LabelField("Abilities");
+        int count = Mathf.Max(0, EditorGUILayout.IntField("Size", data.abilities.Count));
+        while (count > data.abilities.Count)
+            data.abilities.Add(null);
+        while (count < data.abilities.Count)
+            data.abilities.RemoveAt(data.abilities.Count - 1);
+        for (int i = 0; i < data.abilities.Count; i++)
+        {
+            data.abilities[i] = (AbilityData)EditorGUILayout.ObjectField($"Element {i}", data.abilities[i], typeof(AbilityData), false);
+        }
+
         if (GUI.changed)
         {
             EditorUtility.SetDirty(data);

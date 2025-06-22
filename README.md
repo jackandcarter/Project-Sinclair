@@ -78,6 +78,11 @@ missions.
 `LectureDefinition` assets describe stat bonuses awarded by `LectureEvent`
 components when a character attends a lecture.
 
+### AbilitySystem
+Handles casting character abilities during battle including MP costs and
+cooldowns. `DamageAbility` provides a simple example spell that deals damage to
+a target.
+
 ## Developer Console
 Press the **backquote (`) key** at runtime to open the developer console. From
 here you can run debug commands such as:
