@@ -68,7 +68,15 @@ public class BattleManager : MonoBehaviour
         {
             // Simple attack using character strength and defense values
             int damage = Mathf.Max(1, character.data.strength - target.data.defense);
-            target.currentHP -= damage;
+
+            if (!(target.isPlayer && DevConsole.IsGodMode))
+            {
+                target.currentHP -= damage;
+            }
+            else
+            {
+                damage = 0;
+            }
 
             Debug.Log($"{character.data.characterName} attacks {target.data.characterName} for {damage} damage!");
         }
