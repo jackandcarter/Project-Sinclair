@@ -3,7 +3,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System.Collections;
 
-public class DockIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerClickHandler
+public class DockIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
     [Header("Common Settings")]
     [Tooltip("If true, this icon cannot be dragged, rearranged, or removed.")]
@@ -32,6 +32,12 @@ public class DockIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
     public float abilityFallSpeed = 100f; // Pixels per second while falling back.
     protected bool isAbilityActive = false;
 
+    [Header("Hover Settings")]
+    public float hoverScale = 1.2f; // Scale multiplier when hovered.
+    public float scaleSpeed = 10f;   // Speed of scale transition.
+    protected bool isHovered = false;
+    protected Vector3 initialScale;
+
     protected virtual void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
@@ -39,11 +45,13 @@ public class DockIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
         if (parentCanvas == null)
             parentCanvas = GetComponentInParent<Canvas>();
         originalParent = transform.parent;
+        initialScale = rectTransform.localScale;
     }
 
     protected virtual void Update()
     {
-        // No magnification logic here for now.
+        Vector3 target = initialScale * (isHovered ? hoverScale : 1f);
+        rectTransform.localScale = Vector3.Lerp(rectTransform.localScale, target, Time.deltaTime * scaleSpeed);
     }
 
     ////////////////
@@ -147,6 +155,16 @@ public class DockIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
         DockManager dm = transform.parent.GetComponent<DockManager>();
         if (dm != null)
             dm.ReorderIcons();
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        isHovered = true;
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        isHovered = false;
     }
 
     ////////////////
