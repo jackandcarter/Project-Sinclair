@@ -6,6 +6,9 @@ public class TopDownCharacterController : MonoBehaviour
 {
     public float moveSpeed = 5f; // Movement speed
 
+    /// <summary>Speed at which the character rotates toward movement direction.</summary>
+    public float rotationSpeed = 10f;
+
     /// <summary>Time to reach the desired move velocity.</summary>
     public float smoothTime = 0.1f;
 
@@ -99,7 +102,12 @@ public class TopDownCharacterController : MonoBehaviour
         if (moveDirection.magnitude > 0.1f)
         {
             animator.SetBool("Walk", true);
-            transform.rotation = Quaternion.LookRotation(moveDirection, Vector3.up);
+
+            Quaternion targetRotation = Quaternion.LookRotation(moveDirection, Vector3.up);
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                targetRotation,
+                rotationSpeed * Time.deltaTime);
         }
         else
         {
