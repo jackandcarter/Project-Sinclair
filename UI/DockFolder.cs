@@ -11,6 +11,17 @@ public class DockFolder : DockIcon, IDropHandler {
 
     protected override void Awake() {
         base.Awake();
+        if (subContainer == null)
+        {
+            GameObject child = new GameObject("SubDock", typeof(RectTransform), typeof(DockManager));
+            RectTransform rt = child.GetComponent<RectTransform>();
+            rt.SetParent(transform, false);
+            rt.anchorMin = Vector2.zero;
+            rt.anchorMax = Vector2.one;
+            rt.pivot = new Vector2(0.5f, 0.5f);
+            subContainer = rt;
+            child.SetActive(false);
+        }
         if (isPermanent) {
             isStatic = true;
         }
@@ -18,6 +29,7 @@ public class DockFolder : DockIcon, IDropHandler {
 
     public override void OnPointerClick(PointerEventData eventData) {
         ToggleFolder();
+        Execute();
     }
 
     public void ToggleFolder() {

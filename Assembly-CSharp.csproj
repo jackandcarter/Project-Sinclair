@@ -88,6 +88,8 @@
     <Compile Include="Assets/Scripts/GameSystems/BattleManager.cs" />
     <Compile Include="Assets/Scripts/GameSystems/BattleBarrier.cs" />
     <Compile Include="Assets/Scripts/GameSystems/AbilityData.cs" />
+    <Compile Include="Assets/Scripts/GameSystems/IDockAction.cs" />
+    <Compile Include="Assets/Scripts/GameSystems/BattleActionQueue.cs" />
     <Compile Include="Assets/Digger/Demo/FlyCamera.cs" />
     <Compile Include="Assets/UI/ObjectSpawner/DeveloperOptions.cs" />
     <Compile Include="Assets/Character Foundation/Scripts/CharacterData.cs" />

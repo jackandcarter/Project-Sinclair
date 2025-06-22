@@ -19,6 +19,11 @@ public class DockIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
     // Used internally to differentiate an original icon from a spawned copy.
     private bool isClone = false;
 
+    [Header("Action")]
+    [Tooltip("Action executed when this icon is clicked.")]
+    public ScriptableObject actionAsset;
+    protected IDockAction dockAction;
+
     [Header("Drag Settings")]
     public Canvas parentCanvas; // If not set, auto-finds the parent Canvas.
     protected RectTransform rectTransform;
@@ -46,6 +51,7 @@ public class DockIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
             parentCanvas = GetComponentInParent<Canvas>();
         originalParent = transform.parent;
         initialScale = rectTransform.localScale;
+        dockAction = actionAsset as IDockAction;
     }
 
     protected virtual void Update()
@@ -173,6 +179,7 @@ public class DockIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
 
     public virtual void OnPointerClick(PointerEventData eventData)
     {
+        Execute();
         // If this is not a folder and not currently animating, activate ability.
         if (GetComponent<DockFolder>() == null && !isAbilityActive)
             StartCoroutine(AbilityActivationRoutine());
@@ -205,5 +212,16 @@ public class DockIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
             yield return null;
         }
         isAbilityActive = false;
+    }
+
+    /// <summary>
+    /// Queues this icon's action for execution.
+    /// </summary>
+    public virtual void Execute()
+    {
+        if (dockAction != null && BattleActionQueue.Instance != null)
+        {
+            BattleActionQueue.Instance.QueueAction(dockAction);
+        }
     }
 }
