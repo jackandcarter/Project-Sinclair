@@ -25,6 +25,8 @@ public class BattleManager : MonoBehaviour
     private readonly List<BattleCharacter> turnQueue = new List<BattleCharacter>();
     private int currentTurnIndex;
 
+    private readonly BattleActionQueue actionQueue = new BattleActionQueue();
+
     private void Start()
     {
         if (abilitySystem == null)
@@ -33,6 +35,22 @@ public class BattleManager : MonoBehaviour
         }
         SetupBattle();
         StartCoroutine(BattleLoop());
+    }
+
+    private void Update()
+    {
+        float dt = Time.deltaTime;
+        foreach (BattleCharacter c in turnQueue)
+        {
+            if (c.currentHP <= 0)
+                continue;
+            c.UpdateATB(dt);
+            if (c.IsATBFull && actionQueue.TryPopAction(c, out var act))
+            {
+                act?.Invoke();
+                c.ResetATB();
+            }
+        }
     }
 
     private void SetupBattle()
@@ -165,6 +183,22 @@ public class BattleManager : MonoBehaviour
             Debug.Log($"{user.data.characterName} uses {item.itemName} on {target.data.characterName}.");
         }
     }
+
+    /// <summary>
+    /// Queues an action to be executed when the target's ATB gauge is full.
+    /// </summary>
+    public void QueueAction(BattleCharacter target, System.Action action)
+    {
+        actionQueue.QueueAction(target, action);
+    }
+
+    /// <summary>
+    /// Reorders a queued action for the target.
+    /// </summary>
+    public void ReorderAction(BattleCharacter target, int oldIndex, int newIndex)
+    {
+        actionQueue.ReorderAction(target, oldIndex, newIndex);
+    }
 }
 
 /// <summary>
@@ -177,11 +211,38 @@ public class BattleCharacter
     public int currentMP;
     public bool isPlayer;
 
+    public const float MaxATB = 100f;
+    public float atbGauge;
+
+    /// <summary>
+    /// Returns true when the ATB gauge has reached MaxATB.
+    /// </summary>
+    public bool IsATBFull => atbGauge >= MaxATB;
+
     public BattleCharacter(CharacterData data, bool isPlayer)
     {
         this.data = data;
         this.isPlayer = isPlayer;
         currentHP = data.maxHP;
         currentMP = data.maxMP;
+        atbGauge = 0f;
+    }
+
+    /// <summary>
+    /// Advances the ATB gauge based on agility.
+    /// </summary>
+    public void UpdateATB(float deltaTime)
+    {
+        atbGauge += deltaTime * data.agility;
+        if (atbGauge > MaxATB)
+            atbGauge = MaxATB;
+    }
+
+    /// <summary>
+    /// Resets the ATB gauge to zero.
+    /// </summary>
+    public void ResetATB()
+    {
+        atbGauge = 0f;
     }
 }
