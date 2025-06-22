@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400011
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: ForgeSafetyTraining
+  m_EditorClassIdentifier: 
+  lectureTitle: "Forge Safety Training"
+  description: "Ferris explains the dangers of the forge, toughening participants."
+  hpBonus: 0
+  mpBonus: 0
+  strengthBonus: 0
+  defenseBonus: 2
+  agilityBonus: 0
