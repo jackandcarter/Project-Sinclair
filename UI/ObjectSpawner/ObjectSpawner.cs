@@ -6,6 +6,7 @@ public class ObjectSpawner : MonoBehaviour
     [SerializeField] private GameObject player;
     [SerializeField] private DeveloperOptions developerOptions;
     [SerializeField] public GameObject[] spawnableObjects;
+    [SerializeField] private GameObject axisArrowPrefab;
 
     private int currentIndex = 0;
     private GameObject currentSpawnedObject;
@@ -123,7 +124,7 @@ public class ObjectSpawner : MonoBehaviour
         for (int i = 0; i < 3; i++)
         {
             // Instantiate arrow prefab and position it accordingly
-            axisArrows[i] = Instantiate(/* Axis arrow prefab */, position, Quaternion.identity);
+            axisArrows[i] = Instantiate(axisArrowPrefab, position, Quaternion.identity);
             // Set up event listeners for arrow manipulation
             int axisIndex = i;
             axisArrows[i].GetComponent<AxisArrow>().OnArrowClicked.AddListener(() => ManipulateObject(axisIndex));
