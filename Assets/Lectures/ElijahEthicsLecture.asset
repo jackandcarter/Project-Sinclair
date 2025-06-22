@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: ElijahEthicsLecture
+  m_EditorClassIdentifier: 
+  lectureTitle: "Elijah's Ethics Lecture"
+  description: "A morning lecture from Elijah that slightly sharpens the mind."
+  hpBonus: 0
+  mpBonus: 5
+  strengthBonus: 0
+  defenseBonus: 0
+  agilityBonus: 1
