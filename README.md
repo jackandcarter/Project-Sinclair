@@ -46,3 +46,40 @@ for several interior locations:
 Open the `Olympus` scene from the Unity editor and use the doors placed around
 the main street to access each interior area. The interiors are simple prefabs
 that can be expanded with models and decorations.
+
+## Accessing Scenes
+The project contains several locations that can be loaded directly from the
+Unity editor:
+
+- **Olympus** – `Assets/Scenes/Olympus/Olympus.unity`
+- **War Simulator** – `Scenes/WarSimulator/WaitingRoom.unity` and
+  `Scenes/WarSimulator/Arena.unity`
+- **Dúrnir's Pass** – a collection of scenes under
+  `Assets/Scenes/DurnirsPass/`.
+
+Open any of these `.unity` files through **File → Open Scene…** or by
+double‑clicking them in the Project window.
+
+## Game Systems Overview
+### InventoryManager
+Tracks consumable items for the party and allows adding or using items at
+runtime.
+
+### CaptureTheFlag
+Manages a simple capture‑the‑flag mode inside the War Simulator. Players spawn
+from a waiting room, flags are spawned in the arena and the system records
+scores until a team wins.
+
+### QuestManager
+Keeps lists of active and completed quests so other scripts can start or finish
+missions.
+
+### Lecture Events
+`LectureDefinition` assets describe stat bonuses awarded by `LectureEvent`
+components when a character attends a lecture.
+
+## Placeholder Assets
+Most areas use cubes and basic shapes as temporary models. Create your own
+placeholders under the `Prefabs` folders or import free assets from the Unity
+Asset Store to prototype environments, then replace them with final meshes when
+ready.
