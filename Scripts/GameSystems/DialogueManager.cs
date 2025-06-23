@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+using TMPro;
 
 /// <summary>
 /// Basic dialogue manager for displaying lines of text on a UI panel.
@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class DialogueManager : MonoBehaviour
 {
     public GameObject dialoguePanel; // Panel containing dialogue UI
-    public Text dialogueText;        // UI Text element for dialogue
+    public TMP_Text dialogueText;        // UI Text element for dialogue
 
     private readonly Queue<string> sentences = new Queue<string>();
 

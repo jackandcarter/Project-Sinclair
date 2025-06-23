@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 using System;
 
 public class RemovalPrompt : MonoBehaviour {
@@ -7,7 +8,7 @@ public class RemovalPrompt : MonoBehaviour {
     
     [Header("Prompt UI Elements")]
     public GameObject promptPanel; // The panel containing the prompt.
-    public Text promptMessage;
+    public TMP_Text promptMessage;
     public Button confirmButton;
     public Button cancelButton;
 
