@@ -9,6 +9,8 @@ using UnityEngine;
 [RequireComponent(typeof(Collider))]
 public class Targetable : MonoBehaviour
 {
+    [Tooltip("Whether this object can currently be selected as a target.")]
+    public bool isTargetable = true;
     [Tooltip("Name used when displaying this target.")]
     public string displayName;
 

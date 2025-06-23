@@ -53,7 +53,7 @@ public class TargetManager : MonoBehaviour
         if (Physics.Raycast(ray, out RaycastHit hit, rayDistance, rayLayers))
         {
             Targetable t = hit.collider.GetComponentInParent<Targetable>();
-            if (t != null && (t.CompareTag("Enemy") || t.CompareTag("NPC")))
+            if (t != null && t.isTargetable)
             {
                 Select(t);
             }
