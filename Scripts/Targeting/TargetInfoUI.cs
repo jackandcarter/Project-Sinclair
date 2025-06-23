@@ -43,17 +43,28 @@ public class TargetInfoUI : MonoBehaviour
         }
     }
 
-    private void Update()
+
+    private void OnHealthChanged(int hp)
     {
         if (current != null && healthBar != null)
         {
-            healthBar.fillAmount = current.maxHP > 0 ? (float)current.currentHP / current.maxHP : 0f;
+            healthBar.fillAmount = current.maxHP > 0 ? (float)hp / current.maxHP : 0f;
         }
     }
 
     private void OnTargetSelected(Targetable t)
     {
+        if (current != null)
+        {
+            current.HealthChanged -= OnHealthChanged;
+        }
+
         current = t;
+        if (current != null)
+        {
+            current.HealthChanged += OnHealthChanged;
+            OnHealthChanged(current.currentHP);
+        }
         if (nameText != null)
         {
             nameText.text = t != null ? t.displayName : string.Empty;
@@ -65,6 +76,7 @@ public class TargetInfoUI : MonoBehaviour
     {
         if (current == t)
         {
+            current.HealthChanged -= OnHealthChanged;
             current = null;
             gameObject.SetActive(false);
         }

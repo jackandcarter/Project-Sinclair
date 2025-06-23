@@ -81,7 +81,7 @@ public class BattleManager : MonoBehaviour
 
             if (!(target.isPlayer && DevConsole.IsGodMode))
             {
-                target.currentHP -= damage;
+                target.ChangeHP(-damage);
             }
             else
             {
@@ -164,5 +164,13 @@ public class BattleCharacter
         this.isPlayer = isPlayer;
         currentHP = data.maxHP;
         currentMP = data.maxMP;
+    }
+
+    /// <summary>
+    /// Adjusts HP by the given amount while clamping between 0 and max.
+    /// </summary>
+    public void ChangeHP(int amount)
+    {
+        currentHP = Mathf.Clamp(currentHP + amount, 0, data.maxHP);
     }
 }

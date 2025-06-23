@@ -16,7 +16,7 @@ public class ConsumableItem : ScriptableObject
     {
         if (target != null)
         {
-            target.currentHP = Mathf.Min(target.data.maxHP, target.currentHP + healAmount);
+            target.ChangeHP(healAmount);
             Debug.Log($"{itemName} heals {target.data.characterName} for {healAmount} HP.");
         }
     }

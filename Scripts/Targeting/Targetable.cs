@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 /// <summary>
@@ -13,6 +14,12 @@ public class Targetable : MonoBehaviour
     [Tooltip("Maximum hit points for this target.")]
     public int maxHP = 100;
     public int currentHP = 100;
+
+    /// <summary>
+    /// Fired whenever the current HP value changes.
+    /// Provides the new HP value as a parameter.
+    /// </summary>
+    public event Action<int> HealthChanged;
 
     [Tooltip("Optional component toggled when the target is highlighted.")]
     public Behaviour highlight;
@@ -34,6 +41,19 @@ public class Targetable : MonoBehaviour
         if (highlight != null)
         {
             highlight.enabled = enable;
+        }
+    }
+
+    /// <summary>
+    /// Adjusts this target's HP and invokes <see cref="HealthChanged"/>.
+    /// </summary>
+    public void ChangeHP(int amount)
+    {
+        int old = currentHP;
+        currentHP = Mathf.Clamp(currentHP + amount, 0, maxHP);
+        if (currentHP != old)
+        {
+            HealthChanged?.Invoke(currentHP);
         }
     }
 }
