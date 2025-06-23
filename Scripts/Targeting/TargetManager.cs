@@ -12,6 +12,7 @@ public class TargetManager : MonoBehaviour
     public event Action<Targetable> TargetDeselected;
 
     public float rayDistance = 100f;
+    public Camera raycastCamera;
     public LayerMask rayLayers = Physics.DefaultRaycastLayers;
 
     private Targetable currentTarget;
@@ -25,6 +26,10 @@ public class TargetManager : MonoBehaviour
     private void Awake()
     {
         input = new InputSystem_Actions();
+        if (raycastCamera == null)
+        {
+            raycastCamera = Camera.main;
+        }
     }
 
     private void OnEnable()
@@ -44,7 +49,7 @@ public class TargetManager : MonoBehaviour
         if (!ctx.performed) return;
 
         Vector2 pos = Pointer.current != null ? Pointer.current.position.ReadValue() : Vector2.zero;
-        Ray ray = Camera.main.ScreenPointToRay(pos);
+        Ray ray = raycastCamera.ScreenPointToRay(pos);
         if (Physics.Raycast(ray, out RaycastHit hit, rayDistance, rayLayers))
         {
             Targetable t = hit.collider.GetComponentInParent<Targetable>();
