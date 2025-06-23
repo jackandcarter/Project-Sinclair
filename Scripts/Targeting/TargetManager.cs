@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 /// <summary>
 /// Handles selecting <see cref="Targetable"/> objects via mouse clicks.
@@ -14,28 +15,46 @@ public class TargetManager : MonoBehaviour
     public LayerMask rayLayers = Physics.DefaultRaycastLayers;
 
     private Targetable currentTarget;
+    private InputSystem_Actions input;
 
     /// <summary>
     /// Currently selected target, or null if none.
     /// </summary>
     public Targetable CurrentTarget => currentTarget;
 
-    private void Update()
+    private void Awake()
     {
-        if (Input.GetMouseButtonDown(0))
+        input = new InputSystem_Actions();
+    }
+
+    private void OnEnable()
+    {
+        input.Enable();
+        input.UI.Click.performed += OnClick;
+    }
+
+    private void OnDisable()
+    {
+        input.UI.Click.performed -= OnClick;
+        input.Disable();
+    }
+
+    private void OnClick(InputAction.CallbackContext ctx)
+    {
+        if (!ctx.performed) return;
+
+        Vector2 pos = Pointer.current != null ? Pointer.current.position.ReadValue() : Vector2.zero;
+        Ray ray = Camera.main.ScreenPointToRay(pos);
+        if (Physics.Raycast(ray, out RaycastHit hit, rayDistance, rayLayers))
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit hit, rayDistance, rayLayers))
+            Targetable t = hit.collider.GetComponentInParent<Targetable>();
+            if (t != null && (t.CompareTag("Enemy") || t.CompareTag("NPC")))
             {
-                Targetable t = hit.collider.GetComponentInParent<Targetable>();
-                if (t != null && (t.CompareTag("Enemy") || t.CompareTag("NPC")))
-                {
-                    Select(t);
-                }
-                else
-                {
-                    Select(null);
-                }
+                Select(t);
+            }
+            else
+            {
+                Select(null);
             }
         }
     }
