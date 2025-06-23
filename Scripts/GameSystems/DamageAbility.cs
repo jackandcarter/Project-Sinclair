@@ -15,7 +15,7 @@ public class DamageAbility : AbilityData
         int finalDamage = Mathf.Max(1, damage + user.data.strength - target.data.defense);
         if (!(target.isPlayer && DevConsole.IsGodMode))
         {
-            target.currentHP -= finalDamage;
+            target.ChangeHP(-finalDamage);
         }
         else
         {
