@@ -15,10 +15,13 @@ public class PointClickMovement : MonoBehaviour
     public float effectDuration = 1f; // Lifetime of the spawned effect
     [Tooltip("How close the agent should get to Targetable objects.")]
     public float targetRange = 1f;
+    [Tooltip("If true, holding the input will continuously update the destination.")]
+    public bool continuousMovement;
 
     private NavMeshAgent agent;
     private InputSystem_Actions input;
     private InputAction moveClick;
+    private InputAction holdMove;
 
     private void Awake()
     {
@@ -35,6 +38,7 @@ public class PointClickMovement : MonoBehaviour
             moveClick = input.UI.RightClick;
         }
         moveClick.performed += OnMoveClick;
+        holdMove = input.asset.FindAction("HoldMove", false);
     }
 
     private void OnDisable()
@@ -46,10 +50,22 @@ public class PointClickMovement : MonoBehaviour
         input.Disable();
     }
 
+    private void Update()
+    {
+        if (continuousMovement && holdMove != null && holdMove.IsPressed())
+        {
+            MoveAgentToPointer();
+        }
+    }
+
     private void OnMoveClick(InputAction.CallbackContext ctx)
     {
         if (!ctx.performed) return;
+        MoveAgentToPointer();
+    }
 
+    private void MoveAgentToPointer()
+    {
         Vector2 pos = Pointer.current != null ? Pointer.current.position.ReadValue() : Vector2.zero;
         Ray ray = Camera.main.ScreenPointToRay(pos);
         if (Physics.Raycast(ray, out RaycastHit hit))
