@@ -1,15 +1,15 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
+using TMPro;
 
 public class MouseOverText : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    private Text buttonText; // Reference to the button text
+    private TMP_Text buttonText; // Reference to the button text
 
     void Start()
     {
         // Get the button text component
-        buttonText = GetComponentInChildren<Text>();
+        buttonText = GetComponentInChildren<TMP_Text>();
 
         // Hide the button text initially
         if (buttonText != null)
