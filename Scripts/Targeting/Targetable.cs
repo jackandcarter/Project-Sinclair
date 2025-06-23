@@ -1,9 +1,10 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
 /// Component allowing an object to be targeted by <see cref="TargetManager"/>.
-/// Tracks basic health and manages a highlight effect when selected.
+/// Tracks basic health and manages one or more highlight effects when selected.
 /// </summary>
 [RequireComponent(typeof(Collider))]
 public class Targetable : MonoBehaviour
@@ -21,26 +22,97 @@ public class Targetable : MonoBehaviour
     /// </summary>
     public event Action<int> HealthChanged;
 
-    [Tooltip("Optional component toggled when the target is highlighted.")]
-    public Behaviour highlight;
+    [Tooltip("Components toggled when this target is highlighted.")]
+    public List<Behaviour> highlightEffects = new();
+
+    [Tooltip("Optional prefab spawned while highlighted (e.g., crosshair).")]
+    public GameObject crosshairPrefab;
+
+    [Tooltip("Offset for the spawned crosshair.")]
+    public Vector3 crosshairOffset = Vector3.up;
+
+    [Tooltip("Color applied to highlight effects if supported.")]
+    public Color highlightColor = Color.yellow;
+
+    private GameObject crosshairInstance;
 
     private void Awake()
     {
         currentHP = Mathf.Clamp(currentHP, 0, maxHP);
-        if (highlight != null)
+        foreach (Behaviour b in highlightEffects)
         {
-            highlight.enabled = false;
+            if (b != null)
+            {
+                b.enabled = false;
+            }
         }
     }
 
     /// <summary>
-    /// Enables or disables the highlight effect.
+    /// Enables or disables all highlight effects.
     /// </summary>
     public void Highlight(bool enable)
     {
-        if (highlight != null)
+        foreach (Behaviour b in highlightEffects)
         {
-            highlight.enabled = enable;
+            if (b != null)
+            {
+                b.enabled = enable;
+                if (enable)
+                {
+                    ApplyColor(b.gameObject);
+                }
+            }
+        }
+
+        HandleCrosshair(enable);
+    }
+
+    private void HandleCrosshair(bool enable)
+    {
+        if (crosshairPrefab == null)
+        {
+            return;
+        }
+
+        if (enable)
+        {
+            if (crosshairInstance == null)
+            {
+                crosshairInstance = Instantiate(crosshairPrefab, transform);
+                crosshairInstance.transform.localPosition = crosshairOffset;
+                ApplyColor(crosshairInstance);
+            }
+            else
+            {
+                crosshairInstance.SetActive(true);
+            }
+        }
+        else if (crosshairInstance != null)
+        {
+            Destroy(crosshairInstance);
+            crosshairInstance = null;
+        }
+    }
+
+    private void ApplyColor(GameObject obj)
+    {
+        if (obj == null)
+        {
+            return;
+        }
+
+        foreach (var renderer in obj.GetComponentsInChildren<SpriteRenderer>())
+        {
+            renderer.color = highlightColor;
+        }
+        foreach (var r in obj.GetComponentsInChildren<Renderer>())
+        {
+            if (r is SpriteRenderer) continue;
+            if (r.material != null && r.material.HasProperty("_Color"))
+            {
+                r.material.color = highlightColor;
+            }
         }
     }
 
