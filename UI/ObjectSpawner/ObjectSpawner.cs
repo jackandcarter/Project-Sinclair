@@ -5,6 +5,7 @@ public class ObjectSpawner : MonoBehaviour
 {
     [SerializeField] private GameObject player;
     [SerializeField] private DeveloperOptions developerOptions;
+    [SerializeField] private KeyCode spawnModifierKey = KeyCode.LeftShift;
     [SerializeField] public GameObject[] spawnableObjects;
     [SerializeField] private GameObject axisArrowPrefab;
 
@@ -19,8 +20,8 @@ public class ObjectSpawner : MonoBehaviour
         if (!developerOptions.IsDropdownOpen())
             return;
 
-        // Check if left mouse button is clicked
-        if (Input.GetMouseButtonDown(0))
+        // Check if the spawn input is used along with left mouse button
+        if (Input.GetMouseButtonDown(0) && Input.GetKey(spawnModifierKey))
         {
             if (currentSpawnedObject == null)
             {
