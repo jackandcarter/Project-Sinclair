@@ -13,9 +13,12 @@ public class PointClickMovement : MonoBehaviour
     [Tooltip("Optional effect prefab to spawn at the clicked destination.")]
     public GameObject destinationEffect;
     public float effectDuration = 1f; // Lifetime of the spawned effect
+    [Tooltip("How close the agent should get to Targetable objects.")]
+    public float targetRange = 1f;
 
     private NavMeshAgent agent;
     private InputSystem_Actions input;
+    private InputAction moveClick;
 
     private void Awake()
     {
@@ -26,12 +29,20 @@ public class PointClickMovement : MonoBehaviour
     private void OnEnable()
     {
         input.Enable();
-        input.UI.RightClick.performed += OnMoveClick;
+        moveClick = input.asset.FindAction("MoveClick", false);
+        if (moveClick == null)
+        {
+            moveClick = input.UI.RightClick;
+        }
+        moveClick.performed += OnMoveClick;
     }
 
     private void OnDisable()
     {
-        input.UI.RightClick.performed -= OnMoveClick;
+        if (moveClick != null)
+        {
+            moveClick.performed -= OnMoveClick;
+        }
         input.Disable();
     }
 
@@ -43,11 +54,23 @@ public class PointClickMovement : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(pos);
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
-            agent.SetDestination(hit.point);
+            Vector3 destination = hit.point;
+            Targetable t = hit.collider.GetComponentInParent<Targetable>();
+            if (t != null)
+            {
+                agent.stoppingDistance = targetRange;
+                destination = t.transform.position;
+            }
+            else
+            {
+                agent.stoppingDistance = 0f;
+            }
+
+            agent.SetDestination(destination);
 
             if (destinationEffect != null)
             {
-                GameObject fx = Instantiate(destinationEffect, hit.point, Quaternion.identity);
+                GameObject fx = Instantiate(destinationEffect, destination, Quaternion.identity);
                 Destroy(fx, effectDuration);
             }
         }
